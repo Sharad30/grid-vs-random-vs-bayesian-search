@@ -100,7 +100,7 @@ def train(
                 "model__random_state": [2022],
             },
             n_jobs=-1,
-            cv=7,
+            cv=5,
             random_state=2022,
             scoring=model_config[task_type]["metric"],
         )
@@ -139,8 +139,8 @@ def train(
         print(f"Completed {name} training")
 
 
-train(task_type="classification", df_dataset=df_classification, model_config=rf_config)
+# train(task_type="classification", df_dataset=df_classification, model_config=rf_config)
 # train(task_type="regression", df_dataset=df_regression, model_config=rf_config)
 
-# train(task_type="classification", df_dataset=df_classification, model_config=xgb_config)
+train(task_type="classification", df_dataset=df_classification, model_config=xgb_config)
 # train(task_type="regression", df_dataset=df_regression, model_config=xgb_config)
