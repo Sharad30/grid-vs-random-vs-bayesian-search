@@ -55,16 +55,16 @@ def train(
     df_dataset: pd.DataFrame = None,
     model_config: dict = rf_config,
 ):
-    dataset_ids = list(df_dataset.did.head(20).values)
+    # dataset_ids = list(df_dataset.did.head(20).values)
     d = Dataset()
     best_models = []
     all_models = pd.DataFrame()
-    for dataset_id in dataset_ids:
+    for name in d.openml.name.values:
         start = time.time()
-        dataset_name = df_dataset[df_dataset.did == dataset_id].name.values[0]
-        print(f"Starting to train dataset: {dataset_name}")
+        # dataset_name = df_dataset[df_dataset.did == dataset_id].name.values[0]
+        print(f"Starting to train dataset: {name}")
         # try:
-        d = d.fetch_dataset(dataset_id=int(dataset_id), task_type=task_type)
+        d = d.fetch_dataset(name=name, task_type=task_type)
         # except:
         # print(f"Dataset download failed for {dataset_name}")
         # continue
@@ -116,7 +116,7 @@ def train(
 
         best_models += [
             {
-                "name": dataset_name,
+                "name": name,
                 "time_elapsed": end - start,
                 "best_score": random_searcher.best_score_,
                 "test_score": random_searcher.score(d.X_test, d.y_test),
@@ -131,16 +131,16 @@ def train(
         )
 
         new_model = pd.DataFrame(random_searcher.cv_results_)
-        new_model["name"] = dataset_name
+        new_model["name"] = name
         all_models = all_models.append(new_model)
         all_models.drop(
             ["params", "param_model__random_state", "param_model__n_jobs"], axis=1
         ).to_csv(f"{model_config['model_name']}_{task_type}_all_models.csv")
-        print(f"Completed {dataset_id} training")
+        print(f"Completed {name} training")
 
 
 train(task_type="classification", df_dataset=df_classification, model_config=rf_config)
-train(task_type="regression", df_dataset=df_regression, model_config=rf_config)
+# train(task_type="regression", df_dataset=df_regression, model_config=rf_config)
 
-train(task_type="classification", df_dataset=df_classification, model_config=xgb_config)
-train(task_type="regression", df_dataset=df_regression, model_config=xgb_config)
+# train(task_type="classification", df_dataset=df_classification, model_config=xgb_config)
+# train(task_type="regression", df_dataset=df_regression, model_config=xgb_config)

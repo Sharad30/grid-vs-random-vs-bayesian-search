@@ -6,12 +6,14 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from pydantic import BaseModel
 import openml
+from datalists import openml_df
 
 
 class Dataset(BaseModel):
-    dataset_id: int = 0
+    name: str = ""
     x: pd.DataFrame = pd.DataFrame()
     y: np.ndarray = np.ndarray(shape=(0,))
+    openml: pd.DataFrame = openml_df
     numerical_ix: list = []
     categorical_ix: list = []
     X_train: np.ndarray = np.ndarray(shape=(0,))
@@ -31,14 +33,17 @@ class Dataset(BaseModel):
     def describe(self):
         return self.x.describe()
 
-    def fetch_dataset(self, dataset_id: int = 0, task_type: str = "classification"):
-        self.dataset_id = dataset_id
-        dataset = openml.datasets.get_dataset(self.dataset_id)
-        print(f"Dataset {dataset_id} download starting.")
+    def fetch_dataset(self, name: str = 0, task_type: str = "classification"):
+        self.name = name
+        dataset_id = int(
+            self.openml[self.openml.name == name].openml_dataset_id.values[0]
+        )
+        dataset = openml.datasets.get_dataset(dataset_id)
+        print(f"Dataset {name} download starting.")
         self.x, self.y, categorical_indicator, attribute_names = dataset.get_data(
             dataset_format="dataframe", target=dataset.default_target_attribute
         )
-        print(f"Dataset {dataset_id} download complete.")
+        print(f"Dataset {name} download complete.")
         self.numerical_ix = self.x.select_dtypes(
             include=[np.number, "int64", "float64"]
         ).columns
