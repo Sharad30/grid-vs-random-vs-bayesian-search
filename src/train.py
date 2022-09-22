@@ -139,7 +139,7 @@ def train(
         print(f"Completed {name} training")
 
 
-# train(task_type="classification", df_dataset=df_classification, model_config=rf_config)
+train(task_type="classification", df_dataset=df_classification, model_config=rf_config)
 # train(task_type="regression", df_dataset=df_regression, model_config=rf_config)
 
 train(task_type="classification", df_dataset=df_classification, model_config=xgb_config)
