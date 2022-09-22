@@ -585,3 +585,5 @@ openml_dict = [
 ]
 
 openml_df = pd.DataFrame.from_records(openml_dict)
+cv_datasets_to_ignore = ["CIFAR_10", "Devnagari-Script", "Fashion-MNIST", "mnist_784"]
+openml_df = openml_df[~openml_df.name.isin(cv_datasets_to_ignore)]
